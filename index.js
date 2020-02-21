@@ -1,14 +1,8 @@
-// @flow
-
 import React, { useState, useMemo, useEffect } from "react";
 import { Image, StyleSheet } from "react-native";
+import PropTypes from "prop-types";
 
-type Props = {
-  style: any,
-  uri: string
-};
-
-export default function AutoScaleImage({ style, uri, ...restProps }: Props) {
+function AutoScaleImage({ style, uri, ...restProps }: Props) {
   const flattenedStyles = useMemo(() => StyleSheet.flatten(style), [style]);
   if (
     typeof flattenedStyles.width !== "number" &&
@@ -36,3 +30,14 @@ export default function AutoScaleImage({ style, uri, ...restProps }: Props) {
 
   return <Image source={{ uri }} style={[style, size]} {...restProps} />;
 }
+
+AutoScaleImage.propTypes = {
+  uri: PropTypes.string.isRequired,
+  style: PropTypes.object
+};
+
+AutoScaleImage.defaultProps = {
+  style: {}
+};
+
+export default AutoScaleImage;
