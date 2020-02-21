@@ -1,0 +1,40 @@
+{
+  "name": "react-native-auto-scale-image",
+  "version": "1.0.0",
+  "description": "React Native Image component to calculate width or height automatically, given the other value, to preserve image's aspect ratio",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sourabhv/react-native-auto-scale-image.git"
+  },
+  "keywords": [
+    "react-native",
+    "image",
+    "component",
+    "scale",
+    "scalable",
+    "aspect",
+    "ratio",
+    "aspect-ratio",
+    "fit",
+    "auto",
+    "scale-width",
+    "scale-height"
+  ],
+  "author": "Sourabh Verma (https://github.com/sourabhv)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sourabhv/react-native-auto-scale-image/issues"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "peerDependencies": {
+    "prop-types": "^15.7.2",
+    "react": "^16.8.3",
+    "react-native": "^0.59.0"
+  },
+  "homepage": "https://github.com/sourabhv/react-native-auto-scale-image#readme"
+}
