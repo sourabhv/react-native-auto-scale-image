@@ -1,34 +1,69 @@
-import React, { useState, useMemo, useEffect } from "react";
-import { Image, StyleSheet } from "react-native";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
+import { Image as RNImage, ImageBackground, StyleSheet } from "react-native";
 import PropTypes from "prop-types";
 
-function AutoScaleImage({ style, uri, ...restProps }: Props) {
+const resolveAssetSource = RNImage.resolveAssetSource;
+
+function adjustSize({width, height, ratio}) {
+  return {
+    width: width || ratio * height || 0,
+    height: height || width / ratio || 0
+  }
+}
+
+function AutoScaleImage({
+  style,
+  width: widthProp,
+  height: heightProp,
+  component,
+  background,
+  source,
+  ...restProps
+}: Props) {
   const flattenedStyles = useMemo(() => StyleSheet.flatten(style), [style]);
-  if (
-    typeof flattenedStyles.width !== "number" &&
-    typeof flattenedStyles.height !== "number"
-  ) {
-    throw new Error("AutoScaleImage requires either width or height");
+  const width = widthProp || flattenedStyles.width
+  const height = heightProp || flattenedStyles.height
+  // const [calculatedWidth, setCalculatedWidth] = useState(width)
+  // const [calculatedHeight, setCalculatedHeight] = useState(height)
+  // useEffect(() => {
+  //   setCalculatedWidth(width);
+  //   setCalculatedHeight(height);
+  // }, [width, height])
+
+  const Image = component ? component : background ? ImageBackground : RNImage
+  if (typeof width !== "number" && typeof height !== "number") {
+    throw new Error("AutoScaleImage requires either width or height, defined in either style or as prop");
   }
 
-  const [size, setSize] = useState({
-    width: flattenedStyles.width,
-    height: flattenedStyles.height
+  const [size, setSize] = useState({ width, height });
+
+  const onLayout = useCallback((event)=> {
+
   });
 
   useEffect(() => {
-    if (!flattenedStyles.width || !flattenedStyles.height) {
-      Image.getSize(uri, (w, h) => {
-        const ratio = w / h;
-        setSize({
-          width: flattenedStyles.width || ratio * flattenedStyles.height || 0,
-          height: flattenedStyles.height || flattenedStyles.width / ratio || 0
+    if (!width || !height) {
+      if (source?.uri) {
+        RNImage.getSize(source.uri, (w, h) => {
+          const ratio = w / h;
+          setSize(adjustSize({width, height, ratio}));
         });
-      });
+      } else {
+          const resolvedSource = resolveAssetSource(source);
+          const ratio = resolvedSource.width / sourceToUse.height
+          setSize(adjustSize({width, height, ratio}));
+      }
     }
-  }, [uri, flattenedStyles.width, flattenedStyles.height]);
+  }, [source, width, height]);
 
-  return <Image source={{ uri }} style={[style, size]} {...restProps} />;
+  return (
+    <Image
+      source={source}
+      style={[style, size]}
+      onLayout={onLayout}
+      {...restProps}
+    />
+  );
 }
 
 AutoScaleImage.propTypes = {
